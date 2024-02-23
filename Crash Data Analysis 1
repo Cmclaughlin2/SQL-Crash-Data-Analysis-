@@ -1,0 +1,53 @@
+-- 1. What zip codes are in Rhode Island?
+SELECT DISTINCT ZIP_CODE AS rhode_island_zip_codes
+FROM zipcodes
+WHERE STATE_NAME = 'Rhode Island'
+
+
+-- 2. How many beats are in district 6?
+SELECT 
+COUNT(Beat) AS district_6_beats
+FROM beats
+WHERE DISTRICT_NUM = '6'
+
+
+-- 3. How many people aged 20 and under were completely ejected from the vehicle?
+SELECT 
+COUNT(DISTINCT PERSON_ID) AS under_twenty_completely_ejected
+FROM people
+WHERE AGE <= 20
+AND EJECTION = 'TOTALLY EJECTED'
+
+
+-- 4. How many people were involved in crashes in which the driver failed to yield or tried to evade a police vehicle?
+SELECT 
+COUNT(DISTINCT PERSON_ID) AS failed_yield_or_failed_evasion
+FROM people
+WHERE DRIVER_ACTION = 'FAILED TO YIELD'
+OR DRIVER_ACTION = 'EVADING POLICE VEHICLE'
+
+-- 5. How many vehicles had unreported or no maneuvers?
+SELECT COUNT(*)  AS vehicles_unreported_or_no_maneuvers
+FROM vehicles
+WHERE MANEUVER = 'UNKNOWN/NA'
+OR MANEUVER IS Null
+
+
+-- 6. What are the distinct street direction / street name combinations where the posted speed limit is 5 MPH? (Hint: your query should return a table with two columns)
+SELECT DISTINCT STREET_DIRECTION, STREET_NAME
+FROM crashes
+WHERE POSTED_SPEED_LIMIT = '5'
+
+
+-- 7. How many crashes occurred for each distinct road condition in January 2022?
+SELECT ROADWAY_SURFACE_COND AS surface_conditions, COUNT(ROADWAY_SURFACE_COND) AS crashes_for_roadway_conditions
+FROM crashes
+WHERE CRASH_DATE BETWEEN '2022-1-1 00:00:00.0000000' AND '2022-2-1 00:00:00.0000000'
+GROUP BY ROADWAY_SURFACE_COND
+
+
+-- 8. How many Ford automobiles were involved in crashes and exceeded the speed limit?
+SELECT COUNT(*) AS ford_crashes
+FROM vehicles
+WHERE MAKE = 'Ford'
+AND EXCEED_SPEED_LIMIT_I = 'Y'

@@ -1,0 +1,34 @@
+-- 1.) How many people from New York, New York were involved in hit and run crashes?
+SELECT COUNT(*) AS new_yorkers_hit_and_run 
+FROM zipcodes AS z
+INNER JOIN people AS p
+ON p.ZIP_CODE = z.ZIP_CODE
+INNER JOIN crashes AS c
+on c.CRASH_RECORD_ID = p.CRASH_RECORD_ID
+WHERE CITY = 'NEW YORK'
+AND STATE_NAME = 'NEW YORK'
+AND HIT_AND_RUN_I = 'Y'
+
+
+-- 2.) How many Washingtonians were involved in crashes with a below-average speed limit?
+SELECT COUNT(*) AS Washingtonian_below_avg_speed_limit
+FROM people as p
+INNER JOIN crashes as c
+ON p.CRASH_RECORD_ID = c.CRASH_RECORD_ID
+INNER JOIN zipcodes AS z
+ON z.ZIP_CODE = p.ZIP_CODE
+WHERE z.STATE_NAME = 'Washington'
+AND c.POSTED_SPEED_LIMIT < (SELECT AVG(POSTED_SPEED_LIMIT) FROM crashes)
+
+
+-- 3.) How many vehicles were involved in crashes that occurred in the Harrison, Austin, Englewood, or Town Hall districts in 2022?
+SELECT COUNT(DISTINCT v.VEHICLE_ID) AS district_crashes
+FROM crashes AS c
+INNER JOIN beats AS b
+ON b.BEAT_NUM = c.BEAT_OF_OCCURRENCE
+INNER JOIN districts AS d
+ON d.DISTRICT_NUM = b.DISTRICT_NUM
+INNER JOIN vehicles AS v
+ON v.CRASH_RECORD_ID = c.CRASH_RECORD_ID
+WHERE d.DISTRICT_NAME IN ('Harrison','Austin','Englewood','Town Hall')
+AND YEAR(c.CRASH_DATE) = 2022
